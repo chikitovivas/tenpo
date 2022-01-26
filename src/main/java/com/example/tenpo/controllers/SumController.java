@@ -9,24 +9,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 @RestController
-public class SumController {
+public class SumController extends Controller {
 
     private SumService sumService;
-    private LogService logService;
 
     public SumController(SumService sumService, LogService logService) {
+        super(logService);
         this.sumService = sumService;
-        this.logService = logService;
     }
 
     @PostMapping("/sum")
-    public ResponseEntity<SumResponse> sum(@RequestBody SumForm sumForm) {
-        Integer sum =  sumService.makeSum(sumForm.getToken(), sumForm.getNum1(), sumForm.getNum2());
+    public ResponseEntity<SumResponse> sum(@RequestBody SumForm sumForm, WebRequest webRequest) throws Exception {
+        SumResponse response = (SumResponse) executeWithReturn(
+                () -> sumService.makeSum(sumForm.getToken(), sumForm.getNum1(), sumForm.getNum2()),
+                (Object sum) -> new SumResponse((Integer)sum),
+                sumForm,
+                webRequest,
+                "/sum");
 
-        SumResponse sumResponse = new SumResponse(sum);
-        logService.log("/sum", sumForm, sumResponse);
-        return new ResponseEntity<>(sumResponse, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

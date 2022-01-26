@@ -18,4 +18,8 @@ public class LogService {
         Log log = new Log(Request.toString(), Response.toString(), OffsetDateTime.now(), url);
         logRepository.save(log);
     }
+
+    public Iterable<Log> getAll(String token, Integer index, Integer pageSize) {
+        return logRepository.findAll();
+    }
 }

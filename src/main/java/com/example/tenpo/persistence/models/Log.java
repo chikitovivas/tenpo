@@ -24,6 +24,9 @@ public class Log {
         this.url = url;
     }
 
+    public Log() {
+    }
+
     public String getUrl() {
         return url;
     }

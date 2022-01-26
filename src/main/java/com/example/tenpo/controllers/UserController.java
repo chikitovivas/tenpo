@@ -17,19 +17,21 @@ import org.springframework.web.context.request.WebRequest;
 public class UserController extends Controller {
 
     private UserService userService;
-    private LogService logService;
 
     public UserController(UserService userService, LogService logService) {
+        super(logService);
         this.userService = userService;
-        this.logService = logService;
     }
 
     @PostMapping("/sing-up")
-    public ResponseEntity<Response> signUp(@RequestBody UserForm userForm, WebRequest webRequest) {
-        userService.signUp(userForm.getUsername(), userForm.getPassword());
+    public ResponseEntity<Response> signUp(@RequestBody UserForm userForm, WebRequest webRequest) throws Exception {
+        Response response = (Response) execute(
+                (UserForm form) -> userService.signUp(userForm.getUsername(), userForm.getPassword()),
+                () -> new Response(HttpStatus.OK.value(), "Created Successfully"),
+                userForm,
+                webRequest,
+                "/sing-up");
 
-        Response response = new Response(HttpStatus.OK.value(), "Created Successfully");
-        logService.log("/sing-up", userForm, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

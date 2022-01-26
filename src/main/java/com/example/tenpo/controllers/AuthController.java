@@ -12,35 +12,42 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthController extends Controller {
 
     private AuthService authService;
-    private LogService logService;
 
     public AuthController(AuthService authService, LogService logService) {
+        super(logService);
         this.authService = authService;
-        this.logService = logService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody UserForm userForm) {
-        String token =  authService.login(userForm.getUsername(), userForm.getPassword());
+    public ResponseEntity<AuthResponse> login(@RequestBody UserForm userForm, WebRequest webRequest) throws Exception {
 
-        AuthResponse authResponse = new AuthResponse(token);
-        logService.log("/login", userForm, authResponse);
-        return new ResponseEntity<>(authResponse, HttpStatus.OK);
+        AuthResponse response = (AuthResponse) executeWithReturn(
+                () -> authService.login(userForm.getUsername(), userForm.getPassword()),
+                (Object token) -> new AuthResponse(token.toString()),
+                userForm,
+                webRequest,
+                "/login");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Response> logout(@RequestBody TokenForm tokenForm) {
-        authService.logout(tokenForm.getToken());
+    public ResponseEntity<Response> logout(@RequestBody TokenForm tokenForm, WebRequest webRequest) throws Exception {
+        Response response = (Response) execute(
+                (TokenForm form) -> authService.logout(form.getToken()),
+                () -> new Response(HttpStatus.OK.value(), "Logout successfully"),
+                tokenForm,
+                webRequest,
+                "/logout");
 
-        Response response = new Response(HttpStatus.OK.value(), "Logout successfully");
-        logService.log("/logout", tokenForm, response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
