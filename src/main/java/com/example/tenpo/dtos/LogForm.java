@@ -22,4 +22,13 @@ public class LogForm {
     public Integer getPageSize() {
         return pageSize;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "token='" + token + '\'' +
+                ", index=" + index +
+                ", pageSize=" + pageSize +
+                '}';
+    }
 }

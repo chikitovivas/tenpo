@@ -17,7 +17,7 @@ public class AuthService {
     private UserService userService;
     private AuthRepository authRepository;
 
-    private Integer TOKEN_TTL = 1;
+    private final Integer TOKEN_TTL = 3;
 
     public AuthService(UserService userService, AuthRepository authRepository) {
         this.userService = userService;

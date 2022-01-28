@@ -15,8 +15,7 @@ public class SumService {
 
     public Integer makeSum(String token, Integer sum1, Integer sum2) throws ServiceException {
 
-        boolean isValidToken = authService.isValidToken(token);
-        if (!isValidToken) {
+        if (!authService.isValidToken(token)) {
             throw new UnauthorizedException("Invalid token");
         }
 

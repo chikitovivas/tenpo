@@ -1,17 +1,16 @@
 package com.example.tenpo.dtos;
 
 import com.example.tenpo.persistence.models.Log;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public class LogResponse {
-    List<Log> logs;
+    Page<Log> logs;
 
-    public LogResponse(List<Log> logs) {
+    public LogResponse(Page<Log> logs) {
         this.logs = logs;
     }
 
-    public List<Log> getLogs() {
+    public Page<Log> getLogs() {
         return logs;
     }
 

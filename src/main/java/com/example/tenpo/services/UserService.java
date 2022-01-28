@@ -31,9 +31,7 @@ public class UserService {
 
         String hashedPassword = HashUtils.hash(normalizedPassword);
 
-        User user = new User()
-                .setUsername(normalizedUsername)
-                .setPassword(hashedPassword);
+        User user = new User(normalizedUsername, hashedPassword);
 
         try {
             return userRepository.save(user);
@@ -47,7 +45,7 @@ public class UserService {
     }
 
     private RuntimeException handleSaveExceptions(Exception e, String username) {
-        if (e.getMessage().contains("users_username_uindex")) {
+        if (e.getMessage().contains("users_username_uindex") || e.getMessage().contains("ConstraintViolationException")) {
             return new ConflictException(
                     String.format("Username: '%s' is already taken!", username)
             );

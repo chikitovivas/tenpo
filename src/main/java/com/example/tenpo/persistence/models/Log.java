@@ -1,15 +1,13 @@
 package com.example.tenpo.persistence.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.OffsetDateTime;
 
 @Entity
 public class Log {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "log_id_seq")
     private Long id;
 
     private String request;

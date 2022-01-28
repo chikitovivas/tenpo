@@ -7,15 +7,30 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "users_id_seq")
     private Long id;
 
     @Column(unique = true)
     private String username;
     private String password;
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public User() {
+
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public User setId(Long id) {
+        this.id = id;
+        return this;
     }
 
     public String getUsername() {
